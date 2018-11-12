@@ -158,6 +158,7 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, "Something went wrong while get the submissions..", http.StatusNotFound)
+		return
 	}
 
 	var submissions []model.Post
