@@ -22,6 +22,7 @@ func main() {
 
 	// Set up handlers
 	r := mux.NewRouter()
+	r.StrictSlash(true)
 
 	// first handlers
 	r.HandleFunc("/reddit/", api.Redirect).Methods("GET")
