@@ -32,5 +32,8 @@ func main() {
 	r.HandleFunc("/reddit/api/me/friends/", api.GetFriends).Methods("GET")
 	r.HandleFunc("/reddit/api/submission/", api.SubmissionHandler).Methods("POST")
 
+	// Getting info about provided user
+	r.HandleFunc("/reddit/api/{username}/karma/", api.GetUserKarma).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

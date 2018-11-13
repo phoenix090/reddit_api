@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/aggrolite/geddit"
+	"github.com/gorilla/mux"
 )
 
 const (
@@ -250,6 +251,26 @@ func GetFriends(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = json.NewEncoder(w).Encode(friends); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+// GetUserKarma gets the provideds user's karma. reddit/api/{username}/karma
+func GetUserKarma(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	username := vars["username"]
+	fmt.Println(username)
+	user, err := oAuth.AboutRedditor(username)
+	if err != nil {
+		http.Error(w, "Could't find the user provided", http.StatusNotFound)
+		return
+	}
+
+	karma := user.Karma
+
+	if err = json.NewEncoder(w).Encode(karma); err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }

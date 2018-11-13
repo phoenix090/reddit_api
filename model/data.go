@@ -1,5 +1,9 @@
 package model
 
+import (
+	"github.com/aggrolite/geddit"
+)
+
 // Info is for uptime and info about the api
 type Info struct {
 	Uptime  string `json:"uptime"`
@@ -28,6 +32,7 @@ type User struct {
 	ID      string  `json:"id"`
 	Name    string  `json:"name"`
 	Created float64 `json:"created"`
+	Karma   geddit.Karma
 }
 
 // Karma object
