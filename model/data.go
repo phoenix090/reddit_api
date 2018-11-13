@@ -8,6 +8,7 @@ type Info struct {
 }
 
 // func (s Session) SubredditSubmissions(subreddit string, sort PopularitySort, params ListingOptions) ([]*Submission, error)
+
 // SubRequest is for the user request for submissions
 type SubRequest struct {
 	Keyword  string `json:"keyword"`

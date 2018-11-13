@@ -126,11 +126,11 @@ func getUptime(d time.Duration) string {
 
 // Redirect is for redirecting the user to InfoHandler
 func Redirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, r.URL.Path+"/api/", 301)
+	http.Redirect(w, r, r.URL.Host+"/reddit/api/", 301)
 }
 
 // InfoHandler is for API info
-func InfoHandler(w http.ResponseWriter, r *http.Request) {
+func InfoHandler(w http.ResponseWriter, _ *http.Request) {
 	// Time since application started
 
 	uptime := time.Since(timer)
@@ -159,7 +159,7 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Check body", 404)
+		http.Error(w, err.Error(), 404)
 		return
 	}
 

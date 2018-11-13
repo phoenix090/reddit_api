@@ -12,7 +12,8 @@
 *.out
 
 # Env files
-dev.env
+*.env
 
 # Others
 .vscode
+.idea
