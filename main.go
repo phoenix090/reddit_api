@@ -1,15 +1,16 @@
 package main
 
 import (
+	"github.com/gorilla/mux"
+	"github.com/subosito/gotenv"
 	"log"
 	"net/http"
 	"os"
 	"reddit_api/api"
-
-	"github.com/gorilla/mux"
 )
 
 func main() {
+	gotenv.Load("private.env")
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -17,9 +18,9 @@ func main() {
 
 	// Making oauth for the api and setting up a session
 	api.InitAuth()
-
 	// Set up handlers
 	r := mux.NewRouter()
+	r.StrictSlash(true)
 
 	// first handlers
 	r.HandleFunc("/reddit", api.Redirect).Methods("GET")

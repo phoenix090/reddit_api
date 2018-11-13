@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/aggrolite/geddit"
 	"log"
 	"net/http"
 	"os"
@@ -9,15 +10,13 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/aggrolite/geddit"
 )
 
 const (
 	USER_AGENT = "Debian:github.com/phoenix090/reddit_api:0.1.0 (by /u/EnvironmentalDonkey1)"
 )
 
-var oAuth geddit.OAuthSession
+var oAuth *geddit.OAuthSession
 var session *geddit.Session
 
 // for uptime
@@ -25,7 +24,8 @@ var timer = time.Now()
 
 // InitAuth sets up oauth to reddit and enables session
 func InitAuth() {
-	oAuth, err := geddit.NewOAuthSession(
+	var err error
+	oAuth, err = geddit.NewOAuthSession(
 		os.Getenv("CLIENT_ID"),
 		os.Getenv("CLIENT_SECRET"),
 		USER_AGENT,
@@ -123,7 +123,7 @@ func Redirect(w http.ResponseWriter, r *http.Request) {
 }
 
 // InfoHandler is for API info
-func InfoHandler(w http.ResponseWriter, r *http.Request) {
+func InfoHandler(w http.ResponseWriter, _ *http.Request) {
 	// Time since application started
 
 	uptime := time.Since(timer)
@@ -150,7 +150,7 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Check body", 404)
+		http.Error(w, err.Error(), 404)
 		return
 	}
 
