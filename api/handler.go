@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,21 +15,23 @@ import (
 )
 
 const (
-	USER_AGENT = "Debian:github.com/phoenix090/reddit_api:0.1.0 (by /u/EnvironmentalDonkey1)"
+	USERAGENT = "Debian:github.com/phoenix090/reddit_api:0.1.0 (by /u/EnvironmentalDonkey1)"
 )
 
-var oAuth geddit.OAuthSession
+var oAuth *geddit.OAuthSession
 var session *geddit.Session
+var loging *geddit.LoginSession
 
 // for uptime
 var timer = time.Now()
 
 // InitAuth sets up oauth to reddit and enables session
 func InitAuth() {
-	oAuth, err := geddit.NewOAuthSession(
+	var err error
+	oAuth, err = geddit.NewOAuthSession(
 		os.Getenv("CLIENT_ID"),
 		os.Getenv("CLIENT_SECRET"),
-		USER_AGENT,
+		USERAGENT,
 		"",
 	)
 	if err != nil {
@@ -40,7 +43,11 @@ func InitAuth() {
 		log.Fatal(err)
 	}
 
-	session = geddit.NewSession(USER_AGENT)
+	session = geddit.NewSession(USERAGENT)
+	loging, err = geddit.NewLoginSession(os.Getenv("USERNAME"), os.Getenv("PASSWORD"), USERAGENT)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // uptime
@@ -145,6 +152,8 @@ func InfoHandler(w http.ResponseWriter, r *http.Request) {
 
 // SubmissionHandler handles submission request,
 func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
 	subOpts := geddit.ListingOptions{}
 	var req model.SubRequest
 
@@ -172,4 +181,75 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(submissions)
+}
+
+// GetUserInfo gets basic userinfo
+func GetUserInfo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	redditor, err := loging.Me()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	user := model.User{
+		ID:      redditor.ID,
+		Name:    redditor.Name,
+		Created: redditor.Created,
+	}
+
+	if err = json.NewEncoder(w).Encode(user); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+}
+
+// GetKarma gets basic userinfo
+func GetKarma(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	karmas, err := oAuth.MyKarma()
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	var myKarmas []model.Karma
+
+	for _, k := range karmas {
+		myKarmas = append(myKarmas, model.Karma{
+			CommentKarma: k.CommentKarma,
+			LinkKarma:    k.LinkKarma,
+		})
+	}
+
+	if err = json.NewEncoder(w).Encode(karmas); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+//GetFriends returns slice of friends the user may have
+func GetFriends(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	myFriends, err := oAuth.MyFriends()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	var friends []model.Friend
+	for _, f := range myFriends {
+		friends = append(friends, model.Friend{
+			Date: f.Date,
+			Name: f.Name,
+			ID:   f.ID,
+		})
+	}
+
+	if err = json.NewEncoder(w).Encode(friends); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
 }

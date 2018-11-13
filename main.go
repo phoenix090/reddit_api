@@ -22,8 +22,11 @@ func main() {
 	r := mux.NewRouter()
 
 	// first handlers
-	r.HandleFunc("/reddit", api.Redirect).Methods("GET")
+	r.HandleFunc("/reddit/", api.Redirect).Methods("GET")
 	r.HandleFunc("/reddit/api/", api.InfoHandler).Methods("GET")
+	r.HandleFunc("/reddit/api/me/", api.GetUserInfo).Methods("GET")
+	r.HandleFunc("/reddit/api/me/karma/", api.GetKarma).Methods("GET")
+	r.HandleFunc("/reddit/api/me/friends/", api.GetFriends).Methods("GET")
 	r.HandleFunc("/reddit/api/submission/", api.SubmissionHandler).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":"+port, r))
