@@ -7,9 +7,11 @@ import (
 	"reddit_api/api"
 
 	"github.com/gorilla/mux"
+	"github.com/subosito/gotenv"
 )
 
 func main() {
+	gotenv.Load("dev.env")
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -22,7 +24,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// first handlers
-	r.HandleFunc("/reddit", api.Redirect).Methods("GET")
+	r.HandleFunc("/reddit/", api.Redirect).Methods("GET")
 	r.HandleFunc("/reddit/api/", api.InfoHandler).Methods("GET")
 	r.HandleFunc("/reddit/api/submission/", api.SubmissionHandler).Methods("POST")
 

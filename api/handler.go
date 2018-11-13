@@ -119,7 +119,7 @@ func getUptime(d time.Duration) string {
 
 // Redirect is for redirecting the user to InfoHandler
 func Redirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, r.URL.Path+"/api/", 301)
+	http.Redirect(w, r, r.URL.Path+"/reddit/api/", 301)
 }
 
 // InfoHandler is for API info
