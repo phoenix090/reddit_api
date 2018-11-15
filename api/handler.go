@@ -277,7 +277,7 @@ func GetUserKarma(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GetDefaultFrontPage gets the default frontpage with cap
+// GetDefaultFrontPage gets posts from the default frontpage with cap
 func GetDefaultFrontPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -316,7 +316,7 @@ func GetDefaultFrontPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GetSubReddits gets an users posts
+// GetSubReddits gets subreddit posts
 func GetSubReddits(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
