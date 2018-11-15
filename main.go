@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"reddit_api/api"
+	"reddit_api/model"
 
 	"github.com/gorilla/mux"
 	"github.com/subosito/gotenv"
@@ -19,25 +20,23 @@ func main() {
 
 	// Making oauth for the api and setting up a session
 	api.InitAuth()
-
+	var newApp model.App
 	// Set up handlers
-	r := mux.NewRouter()
-	r.StrictSlash(true)
-
+	newApp.Router = mux.NewRouter()
+	newApp.Router.StrictSlash(true)
 	// first handlers
-	r.HandleFunc("/reddit/", api.Redirect).Methods("GET")
-	r.HandleFunc("/reddit/api/", api.InfoHandler).Methods("GET")
-	r.HandleFunc("/reddit/api/me/", api.GetUserInfo).Methods("GET")
-	r.HandleFunc("/reddit/api/me/karma/", api.GetKarma).Methods("GET")
-	r.HandleFunc("/reddit/api/me/friends/", api.GetFriends).Methods("GET")
-	r.HandleFunc("/reddit/api/submission/", api.SubmissionHandler).Methods("POST")
-
+	newApp.Router.HandleFunc("/reddit/", api.Redirect).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/", api.InfoHandler).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/me/", api.GetUserInfo).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/me/karma/", api.GetKarma).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/me/friends/", api.GetFriends).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/submission/", api.SubmissionHandler).Methods("POST")
 	// Getting info about provided user
-	r.HandleFunc("/reddit/api/{username}/karma/", api.GetUserKarma).Methods("GET")
-	r.HandleFunc("/reddit/api/{cap}/frontpage/{sortby}/", api.GetDefaultFrontPage).Methods("GET")
-	r.HandleFunc("/reddit/api/subreddit/{subreddit}/{sortby}/{cap}/", api.GetSubReddits).Methods("GET")
-	r.HandleFunc("/reddit/api/comments/{submission}/{cap}/", api.GetSubmissionComments).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/{username}/karma/", api.GetUserKarma).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/{cap}/frontpage/{sortby}/", api.GetDefaultFrontPage).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/subreddit/{subreddit}/{sortby}/{cap}/", api.GetSubReddits).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/comments/{submission}/{cap}/", api.GetSubmissionComments).Methods("GET")
 	//r.HandleFunc("/reddit/api/{username}/posts/{cap}/{sortby}/", api.GetUserPosts).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	log.Fatal(http.ListenAndServe(":"+port, newApp.Router))
 }

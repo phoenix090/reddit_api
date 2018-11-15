@@ -2,7 +2,13 @@ package model
 
 import (
 	"github.com/aggrolite/geddit"
+	"github.com/gorilla/mux"
 )
+
+// To make unit test with mux
+type App struct {
+	Router *mux.Router
+}
 
 // Info is for uptime and info about the api
 type Info struct {

@@ -165,7 +165,7 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 404)
 		return
 	}
-	fmt.Println(geddit.PopularitySort(req.SortType))
+
 	posts, err := session.SubredditSubmissions(req.Keyword, geddit.PopularitySort(req.SortType), subOpts)
 
 	if err != nil {
