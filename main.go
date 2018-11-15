@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -22,15 +23,20 @@ func main() {
 	api.InitAuth()
 	var newApp model.App
 	// Set up handlers
+
 	newApp.Router = mux.NewRouter()
 	newApp.Router.StrictSlash(true)
+
+	fmt.Println("=====================RUNNING=====================")
 	// first handlers
 	newApp.Router.HandleFunc("/reddit/", api.Redirect).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/", api.InfoHandler).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/me/", api.GetUserInfo).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/me/karma/", api.GetKarma).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/me/friends/", api.GetFriends).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/me/prefs/", api.GetPrefs).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/submission/", api.SubmissionHandler).Methods("POST")
+
 	// Getting info about provided user
 	newApp.Router.HandleFunc("/reddit/api/{username}/karma/", api.GetUserKarma).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/{cap}/frontpage/{sortby}/", api.GetDefaultFrontPage).Methods("GET")

@@ -68,3 +68,18 @@ type Comment struct {
 	Likes   *int    `json:"likes"`
 	LinkID  string  `json:"linkID"`
 }
+
+type Preferences struct {
+    Research               bool   `json:"research"`
+    ShowTrending           bool   `json:"show_trending"`
+    PrivateFeeds           bool   `json:"private_feeds"`
+    IgnoreSuggestedSort    bool   `json:"ignore_suggested_sort"`
+    Over18                 bool   `json:"over_18"`
+    EmailMessages          bool   `json:"email_messages"`
+    ForceHTTPS             bool   `json:"force_https"`
+    Language               string `json:"lang"`
+    HideFromRobots         bool   `json:"hide_from_robots"`
+    PublicVotes            bool   `json:"public_votes"`
+    HideAds                bool   `json:"hide_ads"`
+    Beta                   bool   `json:"beta"`
+}
