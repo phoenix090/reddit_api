@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 	"reddit_api/api"
-
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/subosito/gotenv"
 )
@@ -24,12 +24,14 @@ func main() {
 	r := mux.NewRouter()
 	r.StrictSlash(true)
 
+	fmt.Println("=====================RUNNING=====================")
 	// first handlers
 	r.HandleFunc("/reddit/", api.Redirect).Methods("GET")
 	r.HandleFunc("/reddit/api/", api.InfoHandler).Methods("GET")
 	r.HandleFunc("/reddit/api/me/", api.GetUserInfo).Methods("GET")
 	r.HandleFunc("/reddit/api/me/karma/", api.GetKarma).Methods("GET")
 	r.HandleFunc("/reddit/api/me/friends/", api.GetFriends).Methods("GET")
+	r.HandleFunc("/reddit/api/me/prefs/", api.GetPrefs).Methods("GET")
 	r.HandleFunc("/reddit/api/submission/", api.SubmissionHandler).Methods("POST")
 
 	// Getting info about provided user

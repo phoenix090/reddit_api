@@ -402,3 +402,32 @@ func GetSubmissionComments(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// Get the user's preferences
+func GetPrefs(w http.ResponseWriter, r *http.Request) {
+	redPrefs, err := oAuth.MyPreferences()
+
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+
+	var prefs model.Preferences = model.Preferences{
+		Research:                    redPrefs.Research,
+		ShowTrending:                redPrefs.ShowTrending,
+		Over18:                      redPrefs.Over18,
+		EmailMessages:               redPrefs.EmailMessages,
+		ForceHTTPS:                  redPrefs.ForceHTTPS,
+		Language:                    redPrefs.Language,
+		HideFromRobots:              redPrefs.HideFromRobots,
+		PublicVotes:                 redPrefs.PublicVotes,
+		HideAds:                     redPrefs.HideAds,
+		Beta:                        redPrefs.Beta,
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	if err = json.NewEncoder(w).Encode(prefs); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+
+}
