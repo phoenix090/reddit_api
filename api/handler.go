@@ -356,12 +356,12 @@ func GetSubReddits(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*
-func GetUserComments(w http.ResponseWriter, r *http.Request) {
+// GetSubmissionComments gets comments of on submission
+func GetSubmissionComments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	vars := mux.Vars(r)
-	username := vars["username"]
+	sub := vars["submission"]
 	cap, err := strconv.Atoi(vars["cap"])
 
 	if err != nil {
@@ -373,16 +373,18 @@ func GetUserComments(w http.ResponseWriter, r *http.Request) {
 		Limit: cap,
 	}
 
-	// Den klarer ikke å finne funksjonen i doc som heter  RedditorComments eller SubredditComments ://
+	submission := geddit.Submission{
+		Title: sub,
+	}
 
-	comms, err := oAuth. (username, listingOpt)
+	coms, err := oAuth.Comments(&submission, "", listingOpt)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "Could't comments..", http.StatusNotFound)
+		http.Error(w, "Could't find comments for the submission provided", http.StatusNotFound)
+		return
 	}
 
 	var comments []model.Comment
-	for _, c := range comms {
+	for _, c := range coms {
 		comments = append(comments, model.Comment{
 			Author:  c.Author,
 			Body:    c.Body,
@@ -395,5 +397,8 @@ func GetUserComments(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
+	if err = json.NewEncoder(w).Encode(comments); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+
 }
-*/

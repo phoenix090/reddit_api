@@ -36,6 +36,7 @@ func main() {
 	r.HandleFunc("/reddit/api/{username}/karma/", api.GetUserKarma).Methods("GET")
 	r.HandleFunc("/reddit/api/{cap}/frontpage/{sortby}/", api.GetDefaultFrontPage).Methods("GET")
 	r.HandleFunc("/reddit/api/subreddit/{subreddit}/{sortby}/{cap}/", api.GetSubReddits).Methods("GET")
+	r.HandleFunc("/reddit/api/comments/{submission}/{cap}/", api.GetSubmissionComments).Methods("GET")
 	//r.HandleFunc("/reddit/api/{username}/posts/{cap}/{sortby}/", api.GetUserPosts).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":"+port, r))
