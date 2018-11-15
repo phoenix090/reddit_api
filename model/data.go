@@ -20,11 +20,14 @@ type SubRequest struct {
 	Cap      int    `json:"cap"`
 }
 
-// Post used for responding back to the user
-type Post struct {
-	Title     string `json:"title"`
-	Author    string `json:"author"`
-	Subreddit string `json:"subreddit"`
+// Submission used for responding back to the user
+type Submission struct {
+	Title       string `json:"title"`
+	Author      string `json:"author"`
+	Subreddit   string `json:"subreddit"`
+	FullID      string `json:"name"`
+	NumComments int    `json:"numComments"`
+	Score       int    `json:"score"`
 }
 
 // User contains basic userinfo from Redditor
@@ -46,4 +49,16 @@ type Friend struct {
 	Date float32 `json:"date"`
 	Name string  `json:"name"`
 	ID   string  `json:"id"`
+}
+
+// Comment contains a users comments
+type Comment struct {
+	Author  string  `json:"author"`
+	Body    string  `json:"body"`
+	Created float64 `json:"created"`
+	Edited  bool    `json:"edited"`
+	FullID  string  `json:"name"`
+	UpVotes float64 `json:"ups"`
+	Likes   *int    `json:"likes"`
+	LinkID  string  `json:"linkID"`
 }

@@ -17,6 +17,8 @@ import (
 
 const (
 	USERAGENT = "Debian:github.com/phoenix090/reddit_api:0.1.0 (by /u/EnvironmentalDonkey1)"
+	// Used to determine how many submission, post and comments the user gets when not spesicified
+	CAP = 5
 )
 
 var oAuth *geddit.OAuthSession
@@ -163,18 +165,18 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 404)
 		return
 	}
-
-	posts, err := session.SubredditSubmissions(req.Keyword, "new", subOpts)
+	fmt.Println(geddit.PopularitySort(req.SortType))
+	posts, err := session.SubredditSubmissions(req.Keyword, geddit.PopularitySort(req.SortType), subOpts)
 
 	if err != nil {
-		http.Error(w, "Something went wrong while get the submissions..", http.StatusNotFound)
+		http.Error(w, "Something went wrong while getting the submissions..", http.StatusNotFound)
 		return
 	}
 
-	var submissions []model.Post
+	var submissions []model.Submission
 	for _, post := range posts[:req.Cap] {
 		//fmt.Printf("Title: %s\nAuthor: %s\n\n", post.Title, post.Author)
-		submissions = append(submissions, model.Post{
+		submissions = append(submissions, model.Submission{
 			Title:     post.Title,
 			Author:    post.Author,
 			Subreddit: post.Subreddit,
@@ -261,8 +263,8 @@ func GetUserKarma(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	username := vars["username"]
-	fmt.Println(username)
-	user, err := oAuth.AboutRedditor(username)
+
+	user, err := session.AboutRedditor(username)
 	if err != nil {
 		http.Error(w, "Could't find the user provided", http.StatusNotFound)
 		return
@@ -274,3 +276,124 @@ func GetUserKarma(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+
+// GetDefaultFrontPage gets the default frontpage with cap
+func GetDefaultFrontPage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	sortBy := geddit.PopularitySort(vars["sortby"])
+	cap, err := strconv.Atoi(vars["cap"])
+	if err != nil {
+		// Setting the cap to default
+		cap = CAP
+	}
+
+	listingOpt := geddit.ListingOptions{
+		Limit: cap,
+	}
+
+	var posts []model.Submission
+	subsmissions, err := session.DefaultFrontpage(sortBy, listingOpt)
+	if err != nil {
+		http.Error(w, "Could't find the the post with the sortype given", http.StatusNotFound)
+		return
+	}
+
+	for _, s := range subsmissions {
+		posts = append(posts, model.Submission{
+			Title:       s.Title,
+			Author:      s.Author,
+			Subreddit:   s.Subreddit,
+			FullID:      s.FullID,
+			NumComments: s.NumComments,
+			Score:       s.Score,
+		})
+	}
+
+	if err = json.NewEncoder(w).Encode(posts); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+// GetSubReddits gets an users posts
+func GetSubReddits(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	subreddit := vars["subreddit"]
+	cap, err := strconv.Atoi(vars["cap"])
+	sortBy := geddit.PopularitySort(vars["sortby"])
+	if err != nil {
+		// Setting the cap to default
+		cap = CAP
+	}
+
+	listingOpt := geddit.ListingOptions{
+		Limit: cap,
+	}
+
+	subs, err := session.SubredditSubmissions(subreddit, sortBy, listingOpt)
+	if err != nil {
+		http.Error(w, "Could't find subreddits for the sorttype provided", http.StatusNotFound)
+		return
+	}
+
+	var userSubmissions []model.Submission
+	for _, post := range subs {
+		userSubmissions = append(userSubmissions, model.Submission{
+			Title:       post.Title,
+			Author:      post.Author,
+			Subreddit:   post.Subreddit,
+			FullID:      post.FullID,
+			NumComments: post.NumComments,
+			Score:       post.Score,
+		})
+	}
+
+	if err = json.NewEncoder(w).Encode(userSubmissions); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+/*
+func GetUserComments(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	username := vars["username"]
+	cap, err := strconv.Atoi(vars["cap"])
+
+	if err != nil {
+		// Setting the cap to default
+		cap = CAP
+	}
+
+	listingOpt := geddit.ListingOptions{
+		Limit: cap,
+	}
+
+	// Den klarer ikke å finne funksjonen i doc som heter  RedditorComments eller SubredditComments ://
+
+	comms, err := oAuth. (username, listingOpt)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Could't comments..", http.StatusNotFound)
+	}
+
+	var comments []model.Comment
+	for _, c := range comms {
+		comments = append(comments, model.Comment{
+			Author:  c.Author,
+			Body:    c.Body,
+			Created: c.Created,
+			Edited:  c.Edited,
+			FullID:  c.FullID,
+			UpVotes: c.UpVotes,
+			Likes:   c.Likes,
+			LinkID:  c.LinkID,
+		})
+	}
+
+}
+*/
