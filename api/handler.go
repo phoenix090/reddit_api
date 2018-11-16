@@ -12,10 +12,13 @@ import (
 	"time"
 
 	"github.com/aggrolite/geddit"
+	"github.com/gorilla/mux"
 )
 
 const (
 	USERAGENT = "Debian:github.com/phoenix090/reddit_api:0.1.0 (by /u/EnvironmentalDonkey1)"
+	// Used to determine how many submission, post and comments the user gets when not spesicified
+	CAP = 5
 )
 
 var oAuth *geddit.OAuthSession
@@ -163,17 +166,17 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := session.SubredditSubmissions(req.Keyword, "new", subOpts)
+	posts, err := session.SubredditSubmissions(req.Keyword, geddit.PopularitySort(req.SortType), subOpts)
 
 	if err != nil {
-		http.Error(w, "Something went wrong while get the submissions..", http.StatusNotFound)
+		http.Error(w, "Something went wrong while getting the submissions..", http.StatusNotFound)
 		return
 	}
 
-	var submissions []model.Post
+	var submissions []model.Submission
 	for _, post := range posts[:req.Cap] {
 		//fmt.Printf("Title: %s\nAuthor: %s\n\n", post.Title, post.Author)
-		submissions = append(submissions, model.Post{
+		submissions = append(submissions, model.Submission{
 			Title:     post.Title,
 			Author:    post.Author,
 			Subreddit: post.Subreddit,
@@ -252,4 +255,179 @@ func GetFriends(w http.ResponseWriter, r *http.Request) {
 	if err = json.NewEncoder(w).Encode(friends); err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
+}
+
+// GetUserKarma gets the provideds user's karma. reddit/api/{username}/karma
+func GetUserKarma(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	user, err := session.AboutRedditor(username)
+	if err != nil {
+		http.Error(w, "Could't find the user provided", http.StatusNotFound)
+		return
+	}
+
+	karma := user.Karma
+
+	if err = json.NewEncoder(w).Encode(karma); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+// GetDefaultFrontPage gets posts from the default frontpage with cap
+func GetDefaultFrontPage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	sortBy := geddit.PopularitySort(vars["sortby"])
+	cap, err := strconv.Atoi(vars["cap"])
+	if err != nil {
+		// Setting the cap to default
+		cap = CAP
+	}
+
+	listingOpt := geddit.ListingOptions{
+		Limit: cap,
+	}
+
+	var posts []model.Submission
+	subsmissions, err := session.DefaultFrontpage(sortBy, listingOpt)
+	if err != nil {
+		http.Error(w, "Could't find the the post with the sortype given", http.StatusNotFound)
+		return
+	}
+
+	for _, s := range subsmissions {
+		posts = append(posts, model.Submission{
+			Title:       s.Title,
+			Author:      s.Author,
+			Subreddit:   s.Subreddit,
+			FullID:      s.FullID,
+			NumComments: s.NumComments,
+			Score:       s.Score,
+		})
+	}
+
+	if err = json.NewEncoder(w).Encode(posts); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+// GetSubReddits gets subreddit posts
+func GetSubReddits(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	subreddit := vars["subreddit"]
+	cap, err := strconv.Atoi(vars["cap"])
+	sortBy := geddit.PopularitySort(vars["sortby"])
+	if err != nil {
+		// Setting the cap to default
+		cap = CAP
+	}
+
+	listingOpt := geddit.ListingOptions{
+		Limit: cap,
+	}
+
+	subs, err := session.SubredditSubmissions(subreddit, sortBy, listingOpt)
+	if err != nil {
+		http.Error(w, "Could't find subreddits for the sorttype provided", http.StatusNotFound)
+		return
+	}
+
+	var userSubmissions []model.Submission
+	for _, post := range subs {
+		userSubmissions = append(userSubmissions, model.Submission{
+			Title:       post.Title,
+			Author:      post.Author,
+			Subreddit:   post.Subreddit,
+			FullID:      post.FullID,
+			NumComments: post.NumComments,
+			Score:       post.Score,
+		})
+	}
+
+	if err = json.NewEncoder(w).Encode(userSubmissions); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+// GetSubmissionComments gets comments of on submission
+func GetSubmissionComments(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	sub := vars["submission"]
+	cap, err := strconv.Atoi(vars["cap"])
+
+	if err != nil {
+		// Setting the cap to default
+		cap = CAP
+	}
+
+	listingOpt := geddit.ListingOptions{
+		Limit: cap,
+	}
+
+	submission := geddit.Submission{
+		Title: sub,
+	}
+
+	coms, err := oAuth.Comments(&submission, "", listingOpt)
+	if err != nil {
+		http.Error(w, "Could't find comments for the submission provided", http.StatusNotFound)
+		return
+	}
+
+	var comments []model.Comment
+	for _, c := range coms {
+		comments = append(comments, model.Comment{
+			Author:  c.Author,
+			Body:    c.Body,
+			Created: c.Created,
+			Edited:  c.Edited,
+			FullID:  c.FullID,
+			UpVotes: c.UpVotes,
+			Likes:   c.Likes,
+			LinkID:  c.LinkID,
+		})
+	}
+
+	if err = json.NewEncoder(w).Encode(comments); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+
+}
+
+// Get the user's preferences
+func GetPrefs(w http.ResponseWriter, r *http.Request) {
+	redPrefs, err := oAuth.MyPreferences()
+
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+
+	var prefs model.Preferences = model.Preferences{
+		Research:                    redPrefs.Research,
+		ShowTrending:                redPrefs.ShowTrending,
+		Over18:                      redPrefs.Over18,
+		EmailMessages:               redPrefs.EmailMessages,
+		ForceHTTPS:                  redPrefs.ForceHTTPS,
+		Language:                    redPrefs.Language,
+		HideFromRobots:              redPrefs.HideFromRobots,
+		PublicVotes:                 redPrefs.PublicVotes,
+		HideAds:                     redPrefs.HideAds,
+		Beta:                        redPrefs.Beta,
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	if err = json.NewEncoder(w).Encode(prefs); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+
 }
