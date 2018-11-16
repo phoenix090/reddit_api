@@ -1,6 +1,9 @@
 package database
 
-import "github.com/globalsign/mgo"
+import (
+	"github.com/globalsign/mgo"
+	"os"
+)
 
 var dbSession *mgo.Session
 
@@ -10,9 +13,9 @@ type Database struct {
 	dbCollection string
 }
 
-func Init(db *Database) {
+func Init() {
 	var err error
-	dbSession, err = mgo.Dial(db.dbURL)
+	dbSession, err = mgo.Dial(os.Getenv("DB_URL"))
 	if err != nil {
 		panic(err)
 	}

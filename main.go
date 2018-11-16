@@ -24,7 +24,7 @@ func main() {
 	var newApp model.App
 
 	// Init database session
-	mongo := database.Database{"172.18.0.2", "database", "reddit"}
+	database.Init()
 
 	// Set up handlers
 

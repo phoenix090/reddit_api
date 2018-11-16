@@ -189,7 +189,7 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetUserInfo gets basic userinfo
-func GetUserInfo(w http.ResponseWriter, r *http.Request) {
+func GetUserInfo(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	redditor, err := loging.Me()
@@ -211,7 +211,7 @@ func GetUserInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetKarma gets basic userinfo
-func GetKarma(w http.ResponseWriter, r *http.Request) {
+func GetKarma(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	karmas, err := oAuth.MyKarma()
@@ -235,7 +235,7 @@ func GetKarma(w http.ResponseWriter, r *http.Request) {
 }
 
 //GetFriends returns slice of friends the user may have
-func GetFriends(w http.ResponseWriter, r *http.Request) {
+func GetFriends(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	myFriends, err := oAuth.MyFriends()
