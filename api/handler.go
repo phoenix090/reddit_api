@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -157,13 +156,16 @@ func InfoHandler(w http.ResponseWriter, _ *http.Request) {
 func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	subOpts := geddit.ListingOptions{}
 	var req model.SubRequest
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), 404)
 		return
+	}
+
+	subOpts := geddit.ListingOptions{
+		Limit: req.Cap,
 	}
 
 	posts, err := session.SubredditSubmissions(req.Keyword, geddit.PopularitySort(req.SortType), subOpts)
@@ -174,7 +176,7 @@ func SubmissionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var submissions []model.Submission
-	for _, post := range posts[:req.Cap] {
+	for _, post := range posts {
 		//fmt.Printf("Title: %s\nAuthor: %s\n\n", post.Title, post.Author)
 		submissions = append(submissions, model.Submission{
 			Title:     post.Title,
@@ -214,7 +216,6 @@ func GetKarma(w http.ResponseWriter, r *http.Request) {
 
 	karmas, err := oAuth.MyKarma()
 	if err != nil {
-		fmt.Println(err)
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
@@ -403,7 +404,7 @@ func GetSubmissionComments(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Get the user's preferences
+// GetPrefs gets the user's preferences
 func GetPrefs(w http.ResponseWriter, r *http.Request) {
 	redPrefs, err := oAuth.MyPreferences()
 
@@ -413,16 +414,16 @@ func GetPrefs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var prefs model.Preferences = model.Preferences{
-		Research:                    redPrefs.Research,
-		ShowTrending:                redPrefs.ShowTrending,
-		Over18:                      redPrefs.Over18,
-		EmailMessages:               redPrefs.EmailMessages,
-		ForceHTTPS:                  redPrefs.ForceHTTPS,
-		Language:                    redPrefs.Language,
-		HideFromRobots:              redPrefs.HideFromRobots,
-		PublicVotes:                 redPrefs.PublicVotes,
-		HideAds:                     redPrefs.HideAds,
-		Beta:                        redPrefs.Beta,
+		Research:       redPrefs.Research,
+		ShowTrending:   redPrefs.ShowTrending,
+		Over18:         redPrefs.Over18,
+		EmailMessages:  redPrefs.EmailMessages,
+		ForceHTTPS:     redPrefs.ForceHTTPS,
+		Language:       redPrefs.Language,
+		HideFromRobots: redPrefs.HideFromRobots,
+		PublicVotes:    redPrefs.PublicVotes,
+		HideAds:        redPrefs.HideAds,
+		Beta:           redPrefs.Beta,
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
