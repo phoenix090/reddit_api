@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	gotenv.Load("dev.env")
+	gotenv.Load("private.env")
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
