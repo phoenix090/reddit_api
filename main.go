@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/subosito/gotenv"
 	"log"
 	"net/http"
 	"os"
 	"reddit_api/api"
+	"reddit_api/database"
 	"reddit_api/model"
-
-	"github.com/gorilla/mux"
-	"github.com/subosito/gotenv"
 )
 
 func main() {
@@ -22,6 +22,10 @@ func main() {
 	// Making oauth for the api and setting up a session
 	api.InitAuth()
 	var newApp model.App
+
+	// Init database session
+	mongo := database.Database{"172.18.0.2", "database", "reddit"}
+
 	// Set up handlers
 
 	newApp.Router = mux.NewRouter()
