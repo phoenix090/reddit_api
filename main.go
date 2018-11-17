@@ -19,7 +19,7 @@ func main() {
 		port = "8080"
 	}
 
-	// Making oauth for the api and setting up a session
+	// Making oauth for the api and setting up a session and db connection
 	api.InitAuth()
 	var newApp model.App
 
@@ -49,6 +49,8 @@ func main() {
 	// Handlers for only admin users
 	newApp.Router.HandleFunc("/reddit/api/admin/user/{id}/{username}/{pwd}", api.GetUser).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/admin/users/{username}/{pwd}", api.GetAllUsers).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/admin/delete/{id}/{username}/{pwd}", api.DeleteOneUser).Methods("DELETE")
+	newApp.Router.HandleFunc("/reddit/api/admin/wipe/{username}/{pwd}", api.DeleteAllUsers).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":"+port, newApp.Router))
 }

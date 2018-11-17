@@ -1,21 +1,11 @@
 package model
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/globalsign/mgo"
 	"gopkg.in/mgo.v2/bson"
 )
-
-// var dbSession *mgo.Session
-
-// Database obj containing db credentials
-type Database struct {
-	DBURL        string
-	DBName       string
-	DBCollection string
-}
 
 // Init initiates the db
 func (db *Database) Init() {
@@ -41,7 +31,6 @@ func (db *Database) Init() {
 
 }
 
-// IDE: ha egne admin enpoints som bruker alle db funksjonaliteten, som for eksempel
 // Add puts a user in the db
 func (db *Database) Add(t User) error {
 	session, err := mgo.Dial(db.DBURL)
@@ -53,7 +42,6 @@ func (db *Database) Add(t User) error {
 
 	err = session.DB(db.DBName).C(db.DBCollection).Insert(t)
 	if err != nil {
-		fmt.Printf("Error in insert(): %v", err.Error())
 		return err
 	}
 	return nil
@@ -72,7 +60,6 @@ func (db *Database) Get(keyID string) (User, error) {
 
 	err = session.DB(db.DBName).C(db.DBCollection).Find(bson.M{"id": keyID}).One(&user)
 	if err != nil {
-		fmt.Printf("Error %v", err.Error())
 		return User{}, err
 	}
 
@@ -92,9 +79,56 @@ func (db *Database) GetAll() ([]User, error) {
 
 	err = session.DB(db.DBName).C(db.DBCollection).Find(bson.M{}).All(&users)
 	if err != nil {
-		fmt.Printf("Error %v", err.Error())
 		return []User{}, err
 	}
 
 	return users, nil
+}
+
+// Count returns the nr of users in the collection
+func (db *Database) Count() int {
+	session, err := mgo.Dial(db.DBURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer session.Close()
+
+	count, err := session.DB(db.DBName).C(db.DBCollection).Count()
+	if err != nil {
+		return -1
+	}
+
+	return count
+}
+
+// DeleteUser removes one user from db
+func (db *Database) DeleteUser(keyID string) error {
+	session, err := mgo.Dial(db.DBURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	err = session.DB(db.DBName).C(db.DBCollection).Remove(bson.M{"id": keyID})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteAll deletes all the users from db
+func (db *Database) DeleteAll() error {
+	session, err := mgo.Dial(db.DBURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	_, err = session.DB(db.DBName).C(db.DBCollection).RemoveAll(bson.M{})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

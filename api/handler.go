@@ -467,9 +467,8 @@ func GetRandomUser(w http.ResponseWriter, r *http.Request) {
 
 	err = globalDB.Add(user)
 	if err != nil {
-		fmt.Println("Something went wrong when adding user")
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
+		// Mongo errors when the user is already in the db
+		fmt.Println("User already registered")
 	}
 
 	if err = json.NewEncoder(w).Encode(user); err != nil {

@@ -5,7 +5,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// To make unit test with mux
+// App to make unit test with mux
 type App struct {
 	Router *mux.Router
 }
@@ -93,4 +93,11 @@ type UserStorage interface {
 	GetAllTracks() []User
 	Get(keyID int) (User, error)
 	DelAll() error
+}
+
+// Database obj containing db credentials
+type Database struct {
+	DBURL        string
+	DBName       string
+	DBCollection string
 }
