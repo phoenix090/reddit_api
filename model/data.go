@@ -69,17 +69,28 @@ type Comment struct {
 	LinkID  string  `json:"linkID"`
 }
 
+// Preferences holds the users prefs
 type Preferences struct {
-    Research               bool   `json:"research"`
-    ShowTrending           bool   `json:"show_trending"`
-    PrivateFeeds           bool   `json:"private_feeds"`
-    IgnoreSuggestedSort    bool   `json:"ignore_suggested_sort"`
-    Over18                 bool   `json:"over_18"`
-    EmailMessages          bool   `json:"email_messages"`
-    ForceHTTPS             bool   `json:"force_https"`
-    Language               string `json:"lang"`
-    HideFromRobots         bool   `json:"hide_from_robots"`
-    PublicVotes            bool   `json:"public_votes"`
-    HideAds                bool   `json:"hide_ads"`
-    Beta                   bool   `json:"beta"`
+	Research            bool   `json:"research"`
+	ShowTrending        bool   `json:"show_trending"`
+	PrivateFeeds        bool   `json:"private_feeds"`
+	IgnoreSuggestedSort bool   `json:"ignore_suggested_sort"`
+	Over18              bool   `json:"over_18"`
+	EmailMessages       bool   `json:"email_messages"`
+	ForceHTTPS          bool   `json:"force_https"`
+	Language            string `json:"lang"`
+	HideFromRobots      bool   `json:"hide_from_robots"`
+	PublicVotes         bool   `json:"public_votes"`
+	HideAds             bool   `json:"hide_ads"`
+	Beta                bool   `json:"beta"`
+}
+
+// UserStorage inferface with the user operation against the db
+type UserStorage interface {
+	Init()
+	Add(t User) error
+	Count() int
+	GetAllTracks() []User
+	Get(keyID int) (User, error)
+	DelAll() error
 }

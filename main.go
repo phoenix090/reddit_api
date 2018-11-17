@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/subosito/gotenv"
 	"log"
 	"net/http"
 	"os"
 	"reddit_api/api"
-	"reddit_api/database"
 	"reddit_api/model"
+
+	"github.com/gorilla/mux"
+	"github.com/subosito/gotenv"
 )
 
 func main() {
@@ -22,9 +22,6 @@ func main() {
 	// Making oauth for the api and setting up a session
 	api.InitAuth()
 	var newApp model.App
-
-	// Init database session
-	database.Init()
 
 	// Set up handlers
 
@@ -46,7 +43,12 @@ func main() {
 	newApp.Router.HandleFunc("/reddit/api/{cap}/frontpage/{sortby}/", api.GetDefaultFrontPage).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/subreddit/{subreddit}/{sortby}/{cap}/", api.GetSubReddits).Methods("GET")
 	newApp.Router.HandleFunc("/reddit/api/comments/{submission}/{cap}/", api.GetSubmissionComments).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/{username}/user/", api.GetRandomUser).Methods("GET")
 	//r.HandleFunc("/reddit/api/{username}/posts/{cap}/{sortby}/", api.GetUserPosts).Methods("GET")
+
+	// Handlers for only admin users
+	newApp.Router.HandleFunc("/reddit/api/admin/user/{id}/{username}/{pwd}", api.GetUser).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/admin/users/{username}/{pwd}", api.GetAllUsers).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":"+port, newApp.Router))
 }

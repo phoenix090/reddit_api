@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -23,9 +24,23 @@ const (
 var oAuth *geddit.OAuthSession
 var session *geddit.Session
 var loging *geddit.LoginSession
+var globalDB model.Database
 
 // for uptime
 var timer = time.Now()
+
+// Connect enables connection to the db
+func connect() {
+	URL, ok := os.LookupEnv("DB_URL")
+	name, ok2 := os.LookupEnv("DB_NAME")
+	collection, ok3 := os.LookupEnv("DB_COLLECTION")
+	if !ok || !ok2 || !ok3 {
+		// Remove before production, just for debug
+		log.Fatal("Error connecting to db")
+	}
+	globalDB = model.Database{DBURL: URL, DBName: name, DBCollection: collection}
+	globalDB.Init()
+}
 
 // InitAuth sets up oauth to reddit and enables session
 func InitAuth() {
@@ -50,6 +65,9 @@ func InitAuth() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Making db connection
+	connect()
 }
 
 // uptime
@@ -431,4 +449,30 @@ func GetPrefs(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 
+}
+
+// GetRandomUser gets an user and puts in the db too
+func GetRandomUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	redditorUser, err := session.AboutRedditor(username)
+	if err != nil {
+		http.Error(w, "Could't find the user provided", http.StatusNotFound)
+		return
+	}
+
+	user := model.User{ID: redditorUser.ID, Name: redditorUser.Name, Created: redditorUser.Created}
+
+	err = globalDB.Add(user)
+	if err != nil {
+		fmt.Println("Something went wrong when adding user")
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	if err = json.NewEncoder(w).Encode(user); err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
 }
