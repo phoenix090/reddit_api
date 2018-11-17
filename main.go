@@ -7,7 +7,9 @@ import (
 	"os"
 	"reddit_api/api"
 	"reddit_api/model"
+	"time"
 
+	"github.com/globalsign/mgo"
 	"github.com/gorilla/mux"
 	"github.com/subosito/gotenv"
 )
@@ -17,6 +19,23 @@ func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
+	}
+
+	// The url will only be "mongo:27017" once this app is run in a docker container.
+	// For now, this IP assumes you have a docker container running MongoDB.
+	// The docker-compose file will be in the repo.
+	// To find the container's IP, run:
+	// docker inspect mongo | jq .[0].NetworkSettings.Networks.mongo_default.IPAddress
+	session, err := mgo.DialWithTimeout("172.18.0.2:27017", time.Duration(5*time.Second))
+	if err == nil {
+		session.SetMode(mgo.Monotonic, true)
+		coll := session.DB("reddit").C("Users")
+		if coll != nil {
+			fmt.Println("Got a collection object")
+			fmt.Println(coll.Name)
+		}
+	} else {
+		fmt.Println(err.Error())
 	}
 
 	// Making oauth for the api and setting up a session and db connection
