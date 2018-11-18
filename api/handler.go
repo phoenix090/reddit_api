@@ -289,6 +289,8 @@ func GetUserKarma(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	Notify("Someone has requested your karma", "", user.ID)
+
 	karma := user.Karma
 
 	if err = json.NewEncoder(w).Encode(karma); err != nil {
@@ -463,6 +465,11 @@ func GetRandomUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = Notify("Someone has requested your user", "", redditorUser.ID)
+	if err != nil {
+		fmt.Println("No webhook was found")
+	}
+
 	user := model.User{ID: redditorUser.ID, Name: redditorUser.Name, Created: redditorUser.Created}
 
 	err = globalDB.Add(user)
@@ -473,5 +480,54 @@ func GetRandomUser(w http.ResponseWriter, r *http.Request) {
 
 	if err = json.NewEncoder(w).Encode(user); err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+func RegisterWebhook(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("Content-Type") != "application/json" { //If request is not of type JSON
+		http.Error(w, http.StatusText(http.StatusBadRequest)+"\nRequest needs JSON body", http.StatusBadRequest) //Respond that the request needs to be correctly formatted
+	}
+	valid := false
+	newWebhook := struct {
+		URL  string `json:"url"`
+		Name string `json:"name"`
+	}{
+		URL:  "",
+		Name: "",
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&newWebhook)
+
+	if strings.Contains(newWebhook.URL, "hooks.slack.com") {
+		valid = true
+	}
+	if strings.Contains(newWebhook.URL, "discordapp.com") {
+		newWebhook.URL = newWebhook.URL + "/slack"
+		fmt.Println(newWebhook.URL)
+		valid = true
+	}
+
+	if !valid {
+		http.Error(w, http.StatusText(http.StatusNotImplemented)+"\nWebhooks are only implemented for discord and slack.", http.StatusNotImplemented)
+		return
+	}
+
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	redditor, err := session.AboutRedditor(newWebhook.Name)
+	if err != nil {
+		http.Error(w, "Could't find the user provided", http.StatusNotFound)
+		return
+	}
+
+	user := model.User{ID: redditor.ID, Name: redditor.Name, Created: redditor.Created, URL: newWebhook.URL}
+	err = globalDB.Add(user)
+	if err != nil {
+		// Mongo errors when the user is already in the db
+		fmt.Println("User already registered, upserting")
+		globalDB.Upsert(user)
 	}
 }

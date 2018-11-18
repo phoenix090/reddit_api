@@ -132,3 +132,13 @@ func (db *Database) DeleteAll() error {
 
 	return nil
 }
+
+func (db *Database) Upsert(t User) {
+	session, err := mgo.Dial(db.DBURL)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	session.DB(db.DBName).C(db.DBCollection).Upsert(bson.M{"id": t.ID}, bson.M{"url": t.URL})
+}

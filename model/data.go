@@ -42,6 +42,7 @@ type User struct {
 	Name    string  `json:"name"`
 	Created float64 `json:"created"`
 	Karma   geddit.Karma
+	URL     string `json:"url"`
 }
 
 // Karma object

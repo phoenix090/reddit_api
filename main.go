@@ -7,12 +7,10 @@ import (
 	"os"
 	"reddit_api/api"
 	"reddit_api/model"
-	"reddit_api/webhook"
 	"time"
 
 	"github.com/globalsign/mgo"
 	"github.com/gorilla/mux"
-	"github.com/robfig/cron"
 	"github.com/subosito/gotenv"
 )
 
@@ -46,10 +44,10 @@ func main() {
 
 	// Set up cron-job for running webhooks
 
-	c := cron.New()
-	c.AddFunc("0 */10 * * * *", func() { webhook.Notify() })
-	c.Start()
-	defer c.Stop()
+	//c := cron.New()
+	//c.AddFunc("0 */10 * * * *", func() { api.Notify() })
+	//c.Start()
+	//defer c.Stop()*/
 	// Set up handlers
 
 	newApp.Router = mux.NewRouter()
@@ -74,10 +72,13 @@ func main() {
 	//r.HandleFunc("/reddit/api/{username}/posts/{cap}/{sortby}/", api.GetUserPosts).Methods("GET")
 
 	// Handlers for only admin users
-	newApp.Router.HandleFunc("/reddit/api/admin/user/{id}/{username}/{pwd}", api.GetUser).Methods("GET")
-	newApp.Router.HandleFunc("/reddit/api/admin/users/{username}/{pwd}", api.GetAllUsers).Methods("GET")
-	newApp.Router.HandleFunc("/reddit/api/admin/delete/{id}/{username}/{pwd}", api.DeleteOneUser).Methods("DELETE")
-	newApp.Router.HandleFunc("/reddit/api/admin/wipe/{username}/{pwd}", api.DeleteAllUsers).Methods("DELETE")
+	newApp.Router.HandleFunc("/reddit/api/admin/user/{id}/{username}/{pwd}/", api.GetUser).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/admin/users/{username}/{pwd}/", api.GetAllUsers).Methods("GET")
+	newApp.Router.HandleFunc("/reddit/api/admin/delete/{id}/{username}/{pwd}/", api.DeleteOneUser).Methods("DELETE")
+	newApp.Router.HandleFunc("/reddit/api/admin/wipe/{username}/{pwd}/", api.DeleteAllUsers).Methods("DELETE")
+
+	// Webhook-handlers
+	newApp.Router.HandleFunc("/reddit/api/webhook/new/", api.RegisterWebhook).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":"+port, newApp.Router))
 }
