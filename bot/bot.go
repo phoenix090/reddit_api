@@ -3,7 +3,6 @@ package bot
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +17,6 @@ import (
 var bot = slacker.NewClient(os.Getenv("SLACKTOKEN"))
 
 func makeReq(url string, meth string, f func(http.ResponseWriter, *http.Request)) *httptest.ResponseRecorder {
-	fmt.Println(url)
 	req, err := http.NewRequest(meth, url, nil)
 	if err != nil {
 		log.Fatalf("Unexpected error, %d", err)
@@ -35,7 +33,6 @@ func handleMe(request slacker.Request, response slacker.ResponseWriter) {
 	w := makeReq("http://localhost:8080/reddit/api/me/", "GET", api.GetUserInfo)
 	var user model.User
 	json.NewDecoder(w.Body).Decode(&user)
-	fmt.Print(w.Code)
 
 	response.Reply("You are " + user.Name + " :)")
 }
@@ -45,7 +42,6 @@ func handleGetFriends(request slacker.Request, response slacker.ResponseWriter) 
 	w := makeReq("http://localhost:8080/reddit/api/me/friends/", "GET", api.GetFriends)
 	var friends []model.Friend
 	json.NewDecoder(w.Body).Decode(&friends)
-	fmt.Print(friends, w.Code)
 
 	var myFriends string
 	for _, f := range friends {
@@ -59,7 +55,7 @@ func handleGetFriends(request slacker.Request, response slacker.ResponseWriter) 
 
 }
 
-//TODO gjør denne dynamisk
+//TODO comment
 func test(mess string, desc string, handler func(slacker.Request, slacker.ResponseWriter)) {
 	bot.Command(mess, desc, handler)
 }
@@ -80,7 +76,6 @@ func handlePrefs(request slacker.Request, response slacker.ResponseWriter) {
 	w := makeReq("http://localhost:8080/reddit/api/me/prefs/", "GET", api.GetPrefs)
 	var prefs model.Preferences
 	json.NewDecoder(w.Body).Decode(&prefs)
-	//fmt.Print(prefs, w.Code)
 
 	response.Reply("Your preference language is: " + prefs.Language)
 }
@@ -110,7 +105,7 @@ func StartBot() {
 	test("prefs", "Gets the users prefs", handlePrefs)
 	test("friends", "", handleGetFriends)
 	test("karma <name>", "Find an users karma", handleKarma)
-	//test("posts <name> <sortby>", "Gets posts", handleKarma)
+	// TODO test("posts <name> <sortby>", "Gets posts", handleKarma)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

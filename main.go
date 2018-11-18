@@ -8,10 +8,12 @@ import (
 	"reddit_api/api"
 	"reddit_api/bot"
 	"reddit_api/model"
+	"reddit_api/webhook"
 	"time"
 
 	"github.com/globalsign/mgo"
 	"github.com/gorilla/mux"
+	"github.com/robfig/cron"
 	"github.com/subosito/gotenv"
 )
 
@@ -27,7 +29,7 @@ func main() {
 	// The docker-compose file will be in the repo.
 	// To find the container's IP, run:
 	// docker inspect mongo | jq .[0].NetworkSettings.Networks.mongo_default.IPAddress
-	session, err := mgo.DialWithTimeout("172.18.0.2:27017", time.Duration(5*time.Second))
+	session, err := mgo.DialWithTimeout("172.19.0.2:27017", time.Duration(5*time.Second))
 	if err == nil {
 		session.SetMode(mgo.Monotonic, true)
 		coll := session.DB("reddit").C("Users")
@@ -45,6 +47,12 @@ func main() {
 
 	// Start bot
 	go bot.StartBot()
+	// Set up cron-job for running webhooks
+
+	c := cron.New()
+	c.AddFunc("0 */10 * * * *", func() { webhook.Notify() })
+	c.Start()
+	defer c.Stop()
 	// Set up handlers
 
 	newApp.Router = mux.NewRouter()
