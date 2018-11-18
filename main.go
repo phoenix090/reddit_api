@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"reddit_api/api"
+	"reddit_api/bot"
 	"reddit_api/model"
 	"time"
 
@@ -42,6 +43,8 @@ func main() {
 	api.InitAuth()
 	var newApp model.App
 
+	// Start bot
+	go bot.StartBot()
 	// Set up handlers
 
 	newApp.Router = mux.NewRouter()

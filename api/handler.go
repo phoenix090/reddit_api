@@ -283,15 +283,26 @@ func GetUserKarma(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	username := vars["username"]
 
+	var path []string
+	// Checks for param given to BOT
+	if username == "" {
+		path = strings.Split(r.URL.Path, "/")
+		// Username has been provided in Chat
+		if len(path) > 4 {
+			username = path[3]
+		}
+	}
+
 	user, err := session.AboutRedditor(username)
 	if err != nil {
+		fmt.Println("error med å hente redditor")
 		http.Error(w, "Could't find the user provided", http.StatusNotFound)
 		return
 	}
-
 	karma := user.Karma
 
 	if err = json.NewEncoder(w).Encode(karma); err != nil {
+		fmt.Println("feil..")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }

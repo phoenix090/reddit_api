@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reddit_api/model"
@@ -92,7 +93,7 @@ func TestSubmissionHandler(t *testing.T) {
 	form := model.SubRequest{Keyword: "soccer", SortType: "new", Cap: 5}
 	b, err := json.Marshal(form)
 	if err != nil {
-		t.Errorf("Could convert struct to bytes %v", err)
+		t.Errorf("Could't marshal into bytes %v", err)
 	}
 	body := bytes.NewReader(b)
 
@@ -127,6 +128,94 @@ func TestSubmissionHandler(t *testing.T) {
 
 			if len(got) != 5 {
 				t.Errorf("Expected %v submissions, got %v", form.Cap, len(got))
+			}
+		}
+	}
+}
+
+// Testing GetKarma function, should return zero
+func TestGetKarma(t *testing.T) {
+	InitAuth()
+	req, err := http.NewRequest("GET", "http:/localhost:8080/reddit/api/me/karma/", nil)
+	if err != nil {
+		t.Errorf("Unexpected error, %d", err)
+	}
+
+	response := makeRequest(req, GetKarma)
+
+	checkStatusCode(t, 200, response.Code)
+
+	// Creating the response body we are expecting
+	var got []model.Karma
+	json.NewDecoder(response.Body).Decode(&got)
+
+	// Checking if we got something different then what we are expecting
+	if response.Code == 200 {
+		// This user doesn't have karma so it should return 0
+		if len(got) != 0 {
+			t.Errorf("Expected 0, got %v", len(got))
+		}
+	}
+}
+
+// Testing GetFriends handler, it should return 0 for this user
+
+func TestGetFriends(t *testing.T) {
+	InitAuth()
+	req, err := http.NewRequest("GET", "http:/localhost:8080/reddit/api/me/friends/", nil)
+	if err != nil {
+		t.Errorf("Unexpected error, %d", err)
+	}
+
+	response := makeRequest(req, GetFriends)
+
+	checkStatusCode(t, 200, response.Code)
+
+	// Creating the response body we are expecting
+	var got []model.Friend
+	json.NewDecoder(response.Body).Decode(&got)
+	// Checking if we got something different then what we are expecting
+	if response.Code == 200 {
+		// This user doesn't have karma so it should return 0
+		if len(got) != 0 {
+			t.Errorf("Expected 0, got %v", len(got))
+		}
+	}
+}
+
+// Testing GetUserKarma function/ handler
+func TestGetUserKarma(t *testing.T) {
+	InitAuth()
+	// Testtable for testing more then one case
+	TestTable := []struct {
+		method   string
+		url      string
+		code     int
+		totKarma int
+	}{
+		{method: "GET", url: "http://localhost:8080/reddit/api/EnvironmentalDonkey1/karma/", code: 200, totKarma: 0},
+		{method: "GET", url: "http://localhost:8080/reddit/api/Arinomi/karma/", code: 200, totKarma: 61},
+		{method: "POST", url: "http://localhost:8080/reddit/api/EnvironmentalDonkey1/karma/", code: 404, totKarma: 0},
+	}
+	for _, testCase := range TestTable {
+		req, err := http.NewRequest(testCase.method, testCase.url, nil)
+		if err != nil {
+			t.Errorf("Unexpected error, %d", err)
+		}
+
+		response := makeRequest(req, GetUserKarma)
+
+		checkStatusCode(t, testCase.code, response.Code)
+
+		var got model.Karma
+		json.NewDecoder(response.Body).Decode(&got)
+
+		fmt.Println(got)
+		if response.Code == 200 {
+			// Checking if we got the right nr of karma
+			tot := got.CommentKarma + got.LinkKarma
+			if tot != testCase.totKarma {
+				t.Errorf("Expected %v, got %v", testCase.totKarma, tot)
 			}
 		}
 	}
