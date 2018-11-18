@@ -542,4 +542,5 @@ func RegisterWebhook(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("User already registered, upserting")
 		globalDB.Upsert(user)
 	}
+	fmt.Fprintln(w, "Webhook-alert was added successfully")
 }
