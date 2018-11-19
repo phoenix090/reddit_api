@@ -250,3 +250,11 @@ Uptime of the service
   "name": "<name of a reddit-user>"
 }
 ```
+
+* Response: 
+
+```
+"Webhook-alert was added successfully"
+or
+"Bad request" if webhook-consumer is unsupported (not discord or slack)
+```

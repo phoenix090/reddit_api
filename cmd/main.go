@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"reddit_api/api"
@@ -27,7 +26,7 @@ func main() {
 	// The docker-compose file will be in the repo.
 	// To find the container's IP, run:
 	// docker inspect mongo | jq .[0].NetworkSettings.Networks.mongo_default.IPAddress
-	session, err := mgo.DialWithTimeout("172.19.0.2:27017", time.Duration(5*time.Second))
+	session, err := mgo.DialWithTimeout("172.18.0.2:27017", time.Duration(5*time.Second))
 	if err == nil {
 		session.SetMode(mgo.Monotonic, true)
 		coll := session.DB("reddit").C("Users")
@@ -83,5 +82,5 @@ func main() {
 	// Webhook-handlers
 	newApp.Router.HandleFunc("/reddit/api/webhook/new/", api.RegisterWebhook).Methods("POST")
 
-	log.Fatal(http.ListenAndServe(":"+port, newApp.Router))
+	http.ListenAndServe(":"+port, newApp.Router)
 }
