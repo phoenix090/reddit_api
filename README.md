@@ -21,8 +21,9 @@ Difficulties:
 - We had some issues using the module for the slack bot (on some of the computers) and had to resort to pair-programming
 
 ## Usage
-- You need to make an app on the reddit website to make use of their API [reddit api- page](https://www.reddit.com/wiki/api). All top four fields in the .env example beneath is from this app you have created.
--If you want clone the repo and use, you need to make .env- file in the repo root folder:
+If you want clone the repo and use it, you need to need to the following:
+- Create an app on the reddit website to make use of their API personally [reddit api- page](https://www.reddit.com/wiki/api). All top four fields in the .env example beneath is from this app you have created.
+- Create .env- file in the repo root folder:
 ```
 export CLIENT_ID= <clientid>
 export CLIENT_SECRET=<clientid secret>
