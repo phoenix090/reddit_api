@@ -11,6 +11,9 @@ Technologies used:
 - OpenStack
 - Slack (bot)
 
+## Scope
+Our scope is to make a reddit API with different end points (the endpoints below). We also wanted some database functionality for admin users so we made use of mongodb in some end points. We also figured out that we want to make a small slack bot to make use of our already implemented reddit API(we haven't made alot because time did't allow this). We also decided deploy all this in Openstack with docker. 
+
 Further development:
 
 Difficulties:
