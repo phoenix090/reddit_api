@@ -405,3 +405,4 @@ We have implemented some features for the bot. here is a screenshot.
 
 Time spent on this project:
 - Hamse: approximately 30 hours.
+- Sondre: approximately 11 hours.
