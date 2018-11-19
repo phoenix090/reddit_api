@@ -37,8 +37,8 @@ Gets the karma of the user.
 
 ```json
 {
-  "comment_karma": \<int\>,
-  "link_karma": \<int\>,
+  "comment_karma": "<int>",
+  "link_karma": "<int>",
 }
 ```
 
@@ -47,9 +47,9 @@ Gets all the friends of the user.
 
 ```json
 {
-	"date": \<float32\>
-	"name": \<string\>
-	"id": \<string\>
+	"date": "<float32>"
+	"name": "<string>"
+	"id": "<string>"
 }
 ```
 
@@ -59,18 +59,18 @@ Get the preferences of the user.
 ```json
 {
  
-	"research": \<bool\>
-	"show_trending": \<bool\>
-	"private_feeds": \<bool\>
-	"ignore_suggested_sort": \<bool\>
-	"over_18": \<bool\>
-	"email_messages": \<bool\>
-	"force_https": \<bool\>
-	"lang": \<"string"\>
-	"hide_from_robots": \<bool\>
-	"public_votes": \<bool\>
-	"hide_ads": \<bool\>
-	"beta": \<bool\>
+	"research": "<bool>"
+	"show_trending": "<bool>"
+	"private_feeds": "<bool>"
+	"ignore_suggested_sort": "<bool>"
+	"over_18": "<bool>"
+	"email_messages": "<bool>"
+	"force_https": "<bool>"
+	"lang": "<string>"
+	"hide_from_robots": "<bool>"
+	"public_votes": "<bool>"
+	"hide_ads": "<bool>"
+	"beta": "<bool>"
 }
 ```
 
@@ -80,12 +80,12 @@ POST a submission //FILL IN
 
 ```json
 {
-  "title": \<"string"\>
-	"author": \<"string"\>
-	"subreddit": \<"string"\>
-	"name": \<"string"\>
-	"numComments": \<"string"\>
-	"score": \<"string"\>
+  "title": "<string>"
+	"author": "<string>"
+	"subreddit": "<string>"
+	"name": "<string>"
+	"numComments": "<string>"
+	"score": "<string>"
 }
 ```
 
