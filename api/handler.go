@@ -470,6 +470,15 @@ func GetRandomUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	vars := mux.Vars(r)
 	username := vars["username"]
+	var path []string
+	// Checks for param given to BOT
+	if username == "" {
+		path = strings.Split(r.URL.Path, "/")
+		// Username has been provided in Chat or in unit test
+		if len(path) > 4 {
+			username = path[3]
+		}
+	}
 
 	redditorUser, err := session.AboutRedditor(username)
 	if err != nil {
@@ -479,7 +488,7 @@ func GetRandomUser(w http.ResponseWriter, r *http.Request) {
 
 	err = Notify("Someone has requested your user", "", redditorUser.ID)
 	if err != nil {
-		fmt.Println("No webhook was found")
+		// fmt.Println("No webhook was found")
 	}
 
 	user := model.User{ID: redditorUser.ID, Name: redditorUser.Name, Created: redditorUser.Created}
@@ -487,7 +496,7 @@ func GetRandomUser(w http.ResponseWriter, r *http.Request) {
 	err = globalDB.Add(user)
 	if err != nil {
 		// Mongo errors when the user is already in the db
-		fmt.Println("User already registered")
+		// fmt.Println("User already registered")
 	}
 
 	if err = json.NewEncoder(w).Encode(user); err != nil {
