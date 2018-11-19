@@ -4,10 +4,10 @@
 ## Descriptions
 
 ## API
-### GET: localhost8080:/reddit/
-Redirects to localhost8080:/reddit/api/
+### GET: localhost:8080/reddit/
+Redirects to localhost:8080/reddit/api/
 
-### GET: localhost8080:/reddit/api/
+### GET: localhost:8080/reddit/api/
 Uptime of the service
 ```json
 {
