@@ -370,3 +370,7 @@ Uptime of the service
 or
 "Bad request" if webhook-consumer is unsupported (not discord or slack)
 ```
+
+## Bot
+We have implemented some features for the bot. here is a screenshot.
+![Screenshot](bot.png)
