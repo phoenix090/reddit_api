@@ -96,6 +96,7 @@ func handlePrefs(request slacker.Request, response slacker.ResponseWriter) {
 	response.Reply("Your preference language is: " + prefs.Language)
 }
 
+// Handles generic words like greetings
 func generic(request slacker.Request, response slacker.ResponseWriter) {
 
 	// Handling all the types of greetings
