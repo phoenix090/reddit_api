@@ -1,18 +1,7 @@
-# Assignment 3 (Group) in IMT2681 Cloud Technologies
 # reddit_api
+# Assignment 3 (Group) in IMT2681 Cloud Technologies
 
-This project creates an API which can be used by developers. This API is used specific for reddit and comes with an user and "admin" functionality. To make this more "user friendly" - it is possible to communicate through a slack bot, which handles simple requests (limited functionality) using the created API. 
-
-Technologies used:
-- Docker
-- Go
-- MongoDB
-- OpenStack
-- Slack (bot
-
-Further development:
-
-Difficulties:
+## Descriptions
 
 ## API
 ### GET: localhost8080:/reddit/
@@ -260,4 +249,12 @@ Uptime of the service
   "url": "<webhook-url(discord or slack)>",
   "name": "<name of a reddit-user>"
 }
+```
+
+* Response: 
+
+```
+"Webhook-alert was added successfully"
+or
+"Bad request" if webhook-consumer is unsupported (not discord or slack)
 ```
