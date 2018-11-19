@@ -373,4 +373,4 @@ or
 
 ## Bot
 We have implemented some features for the bot. here is a screenshot.
-![Screenshot](bot.png)
+- ![Screenshot](bot.png)
