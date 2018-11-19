@@ -21,7 +21,7 @@ Difficulties:
 - We had some issues using the module for the slack bot (on some of the computers) and had to resort to pair-programming
 
 ## Usage
-If you want clone the repo and use it, you need to need to the following:
+If you want to clone the repo and use it, you need to do the following:
 - Create an app on the reddit website to make use of their API personally [reddit api- page](https://www.reddit.com/wiki/api). All top four fields in the .env example beneath is from this app you have created.
 - Create .env- file in the repo root folder:
 ```
