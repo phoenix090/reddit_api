@@ -18,9 +18,9 @@ Uptime of the service
 ```
   
 ### GET: localhost:8080/reddit/api/me/
-Gets the user info thats connected to reddit.
+* What: Gets the user info thats connected to reddit.
 
-*Response:
+* Response:
 
 ```json
 {
@@ -36,9 +36,9 @@ Gets the user info thats connected to reddit.
 ```
 
 ### GET: localhost:8080/reddit/api/me/karma/
-Gets the karma of the user.
+* What: Gets the karma of the user.
 
-*Response:
+* Response:
 
 ```json
 {
@@ -48,9 +48,9 @@ Gets the karma of the user.
 ```
 
 ### GET: localhost:8080/reddit/api/me/friends/
-Gets all the friends of the user.
+* What: Gets all the friends of the user.
 
-*Response:
+* Response:
 
 ```json
 {
@@ -61,9 +61,9 @@ Gets all the friends of the user.
 ```
 
 ### GET: localhost:8080/reddit/api/me/prefs/
-Get the preferences of the user.
+* What: Get the preferences of the user.
 
-*Response:
+* Response:
 
 ```json
 {
@@ -85,9 +85,9 @@ Get the preferences of the user.
 
 
 ### POST: localhost:8080/reddit/api/submission/
-POST a submission //FILL IN
+* What: POST a submission //FILL IN
 
-*Body:
+* Body:
 ```json
 {
   "title": "<string>",
@@ -100,9 +100,9 @@ POST a submission //FILL IN
 ```
 
 ### GET: localhost:8080/reddit/api/{username}/karma/
-Get the karma of an arbitrary user
+* What: Get the karma of an arbitrary user
 
-*Response:
+* Response:
 
 ```json
 {
@@ -111,12 +111,12 @@ Get the karma of an arbitrary user
 ```
 
 ### GET: localhost:8080/reddit/api/{cap}/frontpage/{sortby}/
-Get //FILL IN
+* What: Get //FILL IN
 
-*{cap} - \<int\>  that specifies how many posts to be received
-*{sortby} - \<"string"\>: new,best,top,rising,hot,controversial
+* {cap} - \<int\>  that specifies how many posts to be received
+* {sortby} - \<"string"\>: new,best,top,rising,hot,controversial
 
-*Response:
+* Response:
 
 ```json
 {
@@ -125,13 +125,13 @@ Get //FILL IN
 ```
 
 ### GET: localhost:8080/reddit/api/subreddit/{subreddit}/{sortby}/{cap}/
-Get //FILL IN
+* What: Get //FILL IN
 
-*{subreddit} - \<"string"\> - e.g "r/soccer"
-*{cap} - \<int\>  that specifies how many posts to be received
-*{sortby} - \<"string"\>: new,best,top,rising,hot,controversial
+* {subreddit} - \<"string"\> - e.g "r/soccer"
+* {cap} - \<int\>  that specifies how many posts to be received
+* {sortby} - \<"string"\>: new,best,top,rising,hot,controversial
 
-*Response:
+* Response:
 ```json
 {
   fill in
@@ -139,12 +139,12 @@ Get //FILL IN
 ```
 
 ### GET: localhost:8080/reddit/api/comments/{submission}/{cap}/
-Get a specific amount of submissions
+* What: Get a specific amount of submissions
 
-*{submission} - \<"string"\> "cat"
-*{cap} - \<int\>  that specifies how many posts to be received
+* {submission} - \<"string"\> "cat"
+* {cap} - \<int\>  that specifies how many posts to be received
 
-*Response:
+* Response:
 
 ```json
 {
@@ -153,11 +153,11 @@ Get a specific amount of submissions
 ```
 
 ### GET: localhost:8080/reddit/api/{username}/user/
-Get information of an specific user
+* What: Get information of an specific user
 
-*{username} - \<"string"\>
+* {username} - \<"string"\>
 
-*Response:
+* Response:
 
 ```json
 {
@@ -168,12 +168,12 @@ Get information of an specific user
 ## Admin API
 
 ### GET: localhost:8080/reddit/api/admin/users/{username}/{pwd}/
-Returns every user in the database
+* What: Returns every user in the database
 
-*{username} - \<"string"\> admin username
-*{pwd} - \<"string"\> Pre- specified admin token
+* {username} - \<"string"\> admin username
+* {pwd} - \<"string"\> Pre- specified admin token
 
-*Response:
+* Response:
 
 ```json
 {
@@ -183,13 +183,13 @@ Returns every user in the database
 
 
 ### GET: localhost:8080/reddit/api/admin/user/{id}/{username}/{pwd}/
-Returns a specific user from the database
+* What: Returns a specific user from the database
 
-*{id} - \<"string"\>
-*{username} - \<"string"\>
-*{pwd} - \<"string"\> Pre- specified token
+* {id} - \<"string"\>
+* {username} - \<"string"\>
+* {pwd} - \<"string"\> Pre- specified token
 
-*Response:
+* Response:
 
 ```json
 {
@@ -198,24 +198,24 @@ Returns a specific user from the database
 ```
 
 ### DELETE: localhost:8080/reddit/api/admin/delete/{id}/{username}/{pwd}/
-Deletes a specific user in the database
+* What: Deletes a specific user in the database
 
-*{username} - \<"string"\>
-*{pwd} - \<"string"\> Pre- specified token
+* {username} - \<"string"\>
+* {pwd} - \<"string"\> Pre- specified token
 
-*Response:
+* Response:
 
 ```
  fill in  
 ```
 
 ### DELETE: localhost:8080/reddit/api/admin/wipe/{username}/{pwd}/
-Deletes every user in the database
+* What: Deletes every user in the database
 
-*{username} - <"string"\>
-*{pwd} - \<"string"\> Pre- specified token
+* {username} - <"string"\>
+* {pwd} - \<"string"\> Pre- specified token
 
-*Response:
+* Response:
 
 ```
   Output: Either <"successful"> or <"failed">
@@ -225,9 +225,9 @@ Deletes every user in the database
 ## Webhook
 
 ### POST: localhost:8080/reddit/api/webhook/new/
-Creates a new webhook
+* What: Creates a new webhook
 
-*Body:
+* Body:
 
 ```json
 {
