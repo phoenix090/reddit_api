@@ -113,8 +113,8 @@ Uptime of the service
 ### GET: localhost:8080/reddit/api/{cap}/frontpage/{sortby}/
 * What: Get //FILL IN
 
-* {cap} - \<int\>  that specifies how many posts to be received
-* {sortby} - \<"string"\>: new,best,top,rising,hot,controversial
+ {cap} - <int>  that specifies how many posts to be received
+ {sortby} - <"string">: new, best, top, rising, hot, controversial
 
 * Response:
 
@@ -127,9 +127,9 @@ Uptime of the service
 ### GET: localhost:8080/reddit/api/subreddit/{subreddit}/{sortby}/{cap}/
 * What: Get //FILL IN
 
-* {subreddit} - \<"string"\> - e.g "r/soccer"
-* {cap} - \<int\>  that specifies how many posts to be received
-* {sortby} - \<"string"\>: new,best,top,rising,hot,controversial
+ {subreddit} - <"string"> - e.g "r/soccer"
+ {cap} - <int>  that specifies how many posts to be received
+ {sortby} - <"string">: new,best,top,rising,hot,controversial
 
 * Response:
 ```json
@@ -141,8 +141,8 @@ Uptime of the service
 ### GET: localhost:8080/reddit/api/comments/{submission}/{cap}/
 * What: Get a specific amount of submissions
 
-* {submission} - \<"string"\> "cat"
-* {cap} - \<int\>  that specifies how many posts to be received
+* {submission} - <"string"> "cat"
+* {cap} - <int>  that specifies how many posts to be received
 
 * Response:
 
@@ -155,7 +155,7 @@ Uptime of the service
 ### GET: localhost:8080/reddit/api/{username}/user/
 * What: Get information of an specific user
 
-* {username} - \<"string"\>
+ {username} - <"string">
 
 * Response:
 
@@ -170,8 +170,8 @@ Uptime of the service
 ### GET: localhost:8080/reddit/api/admin/users/{username}/{pwd}/
 * What: Returns every user in the database
 
-* {username} - \<"string"\> admin username
-* {pwd} - \<"string"\> Pre- specified admin token
+ {username} - <"string"> admin username
+ {pwd} - <"string"> Pre- specified admin token
 
 * Response:
 
@@ -185,9 +185,9 @@ Uptime of the service
 ### GET: localhost:8080/reddit/api/admin/user/{id}/{username}/{pwd}/
 * What: Returns a specific user from the database
 
-* {id} - \<"string"\>
-* {username} - \<"string"\>
-* {pwd} - \<"string"\> Pre- specified token
+ {id} - <"string">
+ {username} - <"string">
+ {pwd} - <"string"> Pre- specified token
 
 * Response:
 
@@ -200,8 +200,8 @@ Uptime of the service
 ### DELETE: localhost:8080/reddit/api/admin/delete/{id}/{username}/{pwd}/
 * What: Deletes a specific user in the database
 
-* {username} - \<"string"\>
-* {pwd} - \<"string"\> Pre- specified token
+ {username} - <"string">
+ {pwd} - <"string"> Pre- specified token
 
 * Response:
 
@@ -212,8 +212,8 @@ Uptime of the service
 ### DELETE: localhost:8080/reddit/api/admin/wipe/{username}/{pwd}/
 * What: Deletes every user in the database
 
-* {username} - <"string"\>
-* {pwd} - \<"string"\> Pre- specified token
+ {username} - <"string">
+ {pwd} - <"string"> Pre- specified token
 
 * Response:
 
