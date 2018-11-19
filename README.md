@@ -246,6 +246,7 @@ Uptime of the service
 
 ```json
 {
-  fill in
+  "url": <webhook-url(discord or slack)>,
+  "name": <name of a reddit-user>
 }
 ```
