@@ -20,6 +20,30 @@ Difficulties:
 - We had issues using Dialogflow - the connection with the API (request & response) - and decided to use the bot application provided from Slack.
 - We had some issues using the module for the slack bot (on some of the computers) and had to resort to pair-programming
 
+## Usage
+- You need to make an app on the reddit website to make use of their API [reddit api- page](https://www.reddit.com/wiki/api). All top four fields in the .env example beneath is from this app you have created.
+-If you want clone the repo and use, you need to make .env- file in the repo root folder:
+```
+export CLIENT_ID= <clientid>
+export CLIENT_SECRET=<clientid secret>
+export USERNAME=<reddit username>
+export PASSWORD=<reddit pwd>
+
+export DB_URL=<mongodb url> # see the docs for more info
+export DB_NAME=<db name>
+export DB_COLLECTION=<db collection name>
+
+# the fields below are optional
+# To make use of admin user endpoint to interact with db
+
+export ADMIN_USR=<username of your choice> 
+export ADMIN_PWD=<pwd of your choice>
+
+# Optional, fill this in if you want to use the bot functionality in this app
+export SLACKTOKEN=<slacktocken>
+```
+- Then source the file with: source <filename.env>
+
 ## Descriptions
 
 ## API
@@ -377,3 +401,6 @@ or
 ## Bot
 We have implemented some features for the bot. here is a screenshot.
 - ![Screenshot](bot.png)
+
+Time spent on this project:
+- Hamse: approximately 30 hours.
