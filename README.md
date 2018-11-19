@@ -1,7 +1,18 @@
-# reddit_api
 # Assignment 3 (Group) in IMT2681 Cloud Technologies
+# reddit_api
 
-## Descriptions
+This project creates an API which can be used by developers. This API is used specific for reddit and comes with an user and "admin" functionality. To make this more "user friendly" - it is possible to communicate through a slack bot, which handles simple requests (limited functionality) using the created API. 
+
+Technologies used:
+- Docker
+- Go
+- MongoDB
+- OpenStack
+- Slack (bot
+
+Further development:
+
+Difficulties:
 
 ## API
 ### GET: localhost8080:/reddit/
