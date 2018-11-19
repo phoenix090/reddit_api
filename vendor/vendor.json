@@ -181,6 +181,18 @@
 			"path": "google.golang.org/appengine/urlfetch",
 			"revision": "03cac3b07182cfb08c0d0c0b6ee72a1ceb151c92",
 			"revisionTime": "2018-08-27T17:01:13Z"
+		},
+		{
+			"checksumSHA1": "/xRHTpN8WOK4nmZjJ1f96ER1b/o=",
+			"path": "gopkg.in/mgo.v2/bson",
+			"revision": "9856a29383ce1c59f308dd1cf0363a79b5bef6b5",
+			"revisionTime": "2018-07-05T11:36:04Z"
+		},
+		{
+			"checksumSHA1": "XQsrqoNT1U0KzLxOFcAZVvqhLfk=",
+			"path": "gopkg.in/mgo.v2/internal/json",
+			"revision": "9856a29383ce1c59f308dd1cf0363a79b5bef6b5",
+			"revisionTime": "2018-07-05T11:36:04Z"
 		}
 	],
 	"rootPath": "reddit_api"
