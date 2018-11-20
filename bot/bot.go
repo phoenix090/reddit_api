@@ -138,7 +138,7 @@ func StartBot() {
 	bot.Help(func(request slacker.Request, response slacker.ResponseWriter) {
 		response.Reply(`You can type following to talk to me: 
 						- me [i will guess your name :)]
-						- prefs [i will answer with you're pref language]
+						- prefs [i will answer with your pref language]
 						- friends [i will give you a list of your friends]
 						- karma <username> on reddit [I will get how many karma's the user has :P]`)
 	})
