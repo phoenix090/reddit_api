@@ -405,8 +405,11 @@ We have implemented some features for the bot. here is a screenshot.
 
 Time spent on this project:
 - Hamse: approximately 30 hours.
-- Sondre: approximately 11 hours.
+- Jostein: approximately 17 hours.
 - Odin: approximately 16 hours.
+- Sondre: approximately 11 hours.
+
+Total: 74 hours
 
 ## Deployment
 This has been deployed on an OpenStack VM running Docker.
