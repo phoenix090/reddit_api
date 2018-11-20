@@ -406,3 +406,8 @@ We have implemented some features for the bot. here is a screenshot.
 Time spent on this project:
 - Hamse: approximately 30 hours.
 - Sondre: approximately 11 hours.
+- Odin: approximately 16 hours.
+
+## Deployment
+This has been deployed on an OpenStack VM running Docker.
+Our VM's IP is: 10.212.136.68:8080
