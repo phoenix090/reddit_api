@@ -220,6 +220,7 @@ func GetUserInfo(w http.ResponseWriter, _ *http.Request) {
 		ID:      redditor.ID,
 		Name:    redditor.Name,
 		Created: redditor.Created,
+		Karma:   redditor.Karma,
 	}
 
 	if err = json.NewEncoder(w).Encode(user); err != nil {
