@@ -73,7 +73,7 @@ func TestGetUserHandler(t *testing.T) {
 	checkStatusCode(t, 200, response.Code)
 
 	// Creating the response body we are expecting
-	want := model.User{ID: "27lh22f3", Name: "EnvironmentalDonkey1", Created: 1.541945447e+09, Karma: geddit.Karma{}}
+	want := model.User{ID: "27lh22f3", Name: "EnvironmentalDonkey1", Created: 1.541945447e+09, Karma: geddit.Karma{0, 1}}
 	var got model.User
 
 	json.NewDecoder(response.Body).Decode(&got)
