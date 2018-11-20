@@ -491,7 +491,7 @@ func GetRandomUser(w http.ResponseWriter, r *http.Request) {
 		// fmt.Println("No webhook was found")
 	}
 
-	user := model.User{ID: redditorUser.ID, Name: redditorUser.Name, Created: redditorUser.Created}
+	user := model.User{ID: redditorUser.ID, Name: redditorUser.Name, Created: redditorUser.Created, Karma: redditorUser.Karma}
 
 	err = globalDB.Add(user)
 	if err != nil {
@@ -544,7 +544,7 @@ func RegisterWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := model.User{ID: redditor.ID, Name: redditor.Name, Created: redditor.Created, URL: newWebhook.URL}
+	user := model.User{ID: redditor.ID, Name: redditor.Name, Created: redditor.Created, URL: newWebhook.URL, Karma: redditor.Karma}
 	err = globalDB.Add(user)
 	if err != nil {
 		// Mongo errors when the user is already in the db
